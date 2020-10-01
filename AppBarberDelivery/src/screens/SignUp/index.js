@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../../contexts/UserContext';
+import AsyncStorage from '@react-native-community/async-storage';
+
+import Api from '../../Api';
+
 import { 
     Container, 
     InputArea,
@@ -11,9 +17,6 @@ import {
 } from './styles'
 
 import SignInput from '../../components/SignInput'
-import { useNavigation } from '@react-navigation/native';
-
-import Api from '../../Api';
 
 import BarberLogo from '../../assets/barber.svg';
 import EmailIcon from '../../assets/email.svg';
@@ -24,6 +27,7 @@ import PersonIcon from '../../assets/person.svg';
 
 export default () => {
 
+    const {dispatch: userDispatch } = useContext(UserContext); 
     const navigation = useNavigation();
 
     const [nameField, setNameField] = useState('');
@@ -35,7 +39,18 @@ export default () => {
 
             let json = await Api.singUp(emailField, passwordField, nameField);
             if(json.token){
-                alert('Deu certo')
+                await AsyncStorage.setItem('token', json.token)
+
+                userDispatch({
+                    type: 'setAvatar',
+                    payload:{
+                        avatar: json.data.avatar
+                    }
+                });
+
+                navigation.reset({
+                    routes: [{name: 'MainTab'}]
+                })
 
             }else {
                 alert('E-mail e/ou senha errados')

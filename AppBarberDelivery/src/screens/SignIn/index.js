@@ -1,5 +1,10 @@
 import React, { useState , useContext} from 'react';
 import { UserContext } from '../../contexts/UserContext';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
+
+import Api from '../../Api';
+
 import { 
     Container, 
     InputArea,
@@ -10,12 +15,8 @@ import {
     SignMessageButtonTextBold
 
 } from './styles'
-
 import SignInput from '../../components/SignInput'
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
 
-import Api from '../../Api';
 
 import BarberLogo from '../../assets/barber.svg';
 import EmailIcon from '../../assets/email.svg';
@@ -34,14 +35,14 @@ export default () => {
 
         if(emailField != '' && passwordField != ''){
 
-            let json = await Api.signIn(emailField, passwordField);
-            if(json.token){
-                await AsyncStorage.setItem('token', json.token)
+            let res = await Api.signIn(emailField, passwordField);
+            if(res.token){
+                await AsyncStorage.setItem('token', res.token)
 
                 userDispatch({
                     type: 'setAvatar',
                     payload:{
-                        avatar: json.data.avatar
+                        avatar: res.data.avatar
                     }
                 });
 
