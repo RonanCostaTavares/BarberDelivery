@@ -37,7 +37,7 @@ export default () => {
     const[list, setList] = useState([]);
     const[refreshing, setRefreshing] = useState(false);
 
-
+ 
 
 
     const handleLocationFinder =  async () => {
@@ -90,7 +90,7 @@ export default () => {
             alert("Error: " +res.error)
         }
 
-        setLoading(false)
+        setLoading(false);
         
     }
 
